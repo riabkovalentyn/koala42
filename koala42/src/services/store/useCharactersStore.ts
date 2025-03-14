@@ -9,6 +9,7 @@ interface CharacterStore{
     searchQuery: string;
     setSearchQuery: (searchQuery: string) => void;
     showOnlyWithChildren: boolean;
+    setshowOnlyWithChildren: (value: boolean) => void;
     sortAscending: boolean;
     toggleSort: () => void;
 }
@@ -24,7 +25,7 @@ export const useCharactersStore = create<CharacterStore>((set) => ({
     searchQuery: '',
     setSearchQuery: (searchQuery: string) => set({searchQuery}),
     showOnlyWithChildren: false,
-    setOnlyWithChildren: (value: boolean) => set({showOnlyWithChildren: value}),
+    setshowOnlyWithChildren: (value: boolean) => set({showOnlyWithChildren: value}),
     sortAscending: true,
     toggleSort: () => set((state) => ({sortAscending: !state.sortAscending})),        
 }));
