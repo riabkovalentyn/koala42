@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import MainTable from './components/MainTable';
+import { fetchCharacters } from './utils/fetchCaracters';
+import { useCharactersStore } from './services/store/useCharactersStore';
+
 
  const App: React.FC = () => {
+    const setCharacters = useCharactersStore((state) => state.setCharacters);
+    useEffect(() => {
+      const loadCharacters = async () => {
+        const characters = await fetchCharacters();
+        setCharacters(characters);
+      }
+      loadCharacters();
+    }, [setCharacters]);
+   
+
   
   return (
     <div className="container mx-auto p-6">
@@ -10,6 +23,6 @@ import MainTable from './components/MainTable';
       <MainTable/>
     </div>
   );
-}
 
+};
 export default App;
