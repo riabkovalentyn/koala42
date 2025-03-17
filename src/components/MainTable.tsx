@@ -4,12 +4,13 @@ import { Character } from "../services/types/Character";
 import CharacterRow from "./CharactersRow"
 import { table } from "console";
 
+
 const MainTable: React.FC = () => {
     const { characters, searchQuery, setSearchQuery, toggleSort } = useCharactersStore();
   
-    const filteredCharacters = characters.filter((char) =>{
-    return  char.name.toLowerCase().includes(searchQuery.toLowerCase())
-    });
+    const filteredCharacters = characters.filter((char) =>
+      char.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
   
     return (
       <div>
@@ -48,9 +49,9 @@ const MainTable: React.FC = () => {
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {characters.length > 0 ? (
-              filteredCharacters.map((character) => {
-                return <CharacterRow key={character.id} character={character} />
-              })
+              filteredCharacters.map((character, index) => (
+                <CharacterRow key={character.id} character={character} isOdd={index % 2 === 1} />
+              ))
             ) : (
               <tr>
                 <td colSpan={12} className="px-6 py-4 text-center text-gray-500">
@@ -63,6 +64,8 @@ const MainTable: React.FC = () => {
       </div>
     );
   };
+
+
   
   export default MainTable;
 

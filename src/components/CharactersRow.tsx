@@ -5,9 +5,10 @@ import { Character, NemesisCharacter, SecretRecord } from "../services/types/Cha
 interface CharacterRowProps {
     character: Character | NemesisCharacter | SecretRecord;
     level?: number;
+    isOdd?: boolean;
   }
   
-  const CharacterRow: React.FC<CharacterRowProps> = ({ character, level = 0 }) => {
+  const CharacterRow: React.FC<CharacterRowProps> = ({ character, level = 0, isOdd = false }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
     const [editedName, setEditedName] = useState("name" in character ? character.name : '');
@@ -20,8 +21,9 @@ interface CharacterRowProps {
     const renderHeaders = (level: number) => {
       if (level === 1) {
         return (
-          <tr className="bg-gray-50">
+          <tr>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Character ID</th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Is Alive?</th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Years</th>
@@ -32,6 +34,7 @@ interface CharacterRowProps {
         return (
           <tr className="bg-gray-50">
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"></th>
+            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Nemesis ID</th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Secret Code</th>
             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
@@ -43,8 +46,8 @@ interface CharacterRowProps {
   
     return (
       <>
-        <tr className="hover:bg-gray-100">
-          <td className="px-6 py-4 text-center">
+        <tr className={`hover:bg-gray-100 ${isOdd ? 'bg-gray-50' : 'bg-white'}`}>
+          <td className={`px-6 py-4 text-center ${level > 0 ? `pl-${level * 4}` : ''}`}>
             {"children" in character && character.children.length > 0 && (
               <button
                 onClick={() => setIsExpanded(!isExpanded)}
@@ -82,6 +85,7 @@ interface CharacterRowProps {
           ) : isNemesisCharacter ? (
             <>
               <td className="px-6 py-4 text-center">{(character as NemesisCharacter).characterId}</td>
+              <td className="px-6 py-4 text-center">{(character as NemesisCharacter).id}</td>
               <td className="px-6 py-4 text-center">{(character as NemesisCharacter).isAlive ? "Alive" : "Dead"}</td>
               <td className="px-6 py-4 text-center">{(character as NemesisCharacter).years}</td>
               <td className="px-6 py-4 text-center">
@@ -89,7 +93,7 @@ interface CharacterRowProps {
                   <button
                     onClick={() => removeCharacter(character.id)}
                     className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-800"
-                  >
+                    >
                     X
                   </button>
                 </div>
@@ -97,6 +101,7 @@ interface CharacterRowProps {
             </>
           ) : isSecretRecord ? (
             <>
+              <td className="px-6 py-4 text-center">{(character as SecretRecord).id}</td>
               <td className="px-6 py-4 text-center">{(character as SecretRecord).nemesisID}</td>
               <td className="px-6 py-4 text-center">{(character as SecretRecord).secretCode}</td>
               <td className="px-6 py-4 text-center">
@@ -134,14 +139,18 @@ interface CharacterRowProps {
             </td>
           )}
         </tr>
-        {isExpanded && 'children' in character && character.children.map((child, index) => (
-          <React.Fragment key={child.id}>
-            {index === 0 && renderHeaders(level + 1)}
-            <CharacterRow character={child} level={level + 1} />
-          </React.Fragment>
-        ))}
+        {isExpanded && 'children' in character && Array.isArray(character.children)  && character.children.length > 0 && (
+          <>
+            {character.children.map((child, index) => (
+                <React.Fragment key={child.id}>
+                    {level + 1 === 1 && character.children.length >= 1 && renderHeaders(level + 1)}
+                    {level + 1 === 2 && index == 0 && renderHeaders(level + 1)}
+              <CharacterRow key={child.id} character={child} level={level + 1} isOdd={index % 2 === 1} />
+                </React.Fragment>))}
+          </>
+        )}
       </>
     );
   };
-  
-  export default CharacterRow;
+
+export default CharacterRow;
