@@ -21,6 +21,7 @@ import { useCharactersStore } from './services/store/useCharactersStore';
     <div className="container mx-auto p-6">
       <h1 className='text-3xl font-bold mb-6 text-center'>Hi im Table</h1>
       <MainTable/>
+      <pre>{JSON.stringify(setCharacters, null, 2)}</pre>
     </div>
   );
 
