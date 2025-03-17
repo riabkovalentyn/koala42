@@ -1,5 +1,5 @@
 import jsonData from "../services/data/example-data.json";
-import { Character } from "../services/types/Character";
+import { Character, NemesisCharacter } from "../services/types/Character";
 
 export const fetchCharacters = async (): Promise<Character[]> => {
   try {
@@ -14,26 +14,28 @@ export const fetchCharacters = async (): Promise<Character[]> => {
       inSpaceSince: item.data["In space since"] || "",
       beerConsumption: parseInt(item.data["Beer consumption (l/y)"], 10) || 0,
       knowsTheAnswer: item.data["Knows the answer?"] === "true",
-      children: item.children
-        ? Object.values(item.children)
-            .flatMap((group: any) =>
-              Array.isArray(group.records)
-                ? group.records.map(transformCharacter)
-                : []
-            )
+      children: item.has_nemesis
+        ? item.has_nemesis.records.map(
+            (nemesis: any): NemesisCharacter => ({
+              id: parseInt(nemesis.data.ID, 10),
+              name: `Nemesis ${nemesis.data["Character ID"]}`,
+              knowsTheAnswer: nemesis.data["Is alive?"] === "true",
+              years: parseInt(nemesis.data.Years, 10) || 0,
+            })
+          )
         : [],
     });
 
-    console.log("Исходные данные JSON:", jsonData);
+    console.log("Started data JSON:", jsonData);
     
     const transformedData: Character[] = Array.isArray(jsonData)
       ? jsonData.map(transformCharacter)
       : [];
 
-    console.log("Трансформированные данные:", transformedData);
+    console.log("Transformed data:", transformedData);
     return transformedData;
   } catch (error) {
-    console.error("Ошибка трансформации JSON:", error);
+    console.error("Error transformation JSON:", error);
     return [];
   }
 };

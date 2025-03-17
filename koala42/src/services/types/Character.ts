@@ -10,5 +10,12 @@ export interface Character {
     inSpaceSince: string;
     beerConsumption: number;
     knowsTheAnswer: boolean;
-    children: Character[]; 
+    children: NemesisCharacter[]; 
 }
+
+export interface NemesisCharacter {
+    id: number;
+    name: string;
+    knowsTheAnswer: boolean;
+    years: number;
+  }

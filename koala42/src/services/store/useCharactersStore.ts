@@ -36,6 +36,6 @@ export const useCharactersStore = create<CharacterStore>((set) => ({
     sortAscending: true,
     toggleSort: () => set((state) => ({sortAscending: !state.sortAscending,
         characters: [...state.characters].sort((a, b) =>
-        state.sortAscending ? a.id - b.id : b.id - a.id),
+        state.sortAscending ? a.id - b.id : b.id - a.id)
     })),        
 }));
